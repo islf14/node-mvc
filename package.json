@@ -1,0 +1,32 @@
+{
+  "name": "node-mvc",
+  "version": "1.0.0",
+  "description": "text",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon appMovies.js",
+    "routing": "nodemon routing.js",
+    "express": "nodemon express.js",
+    "movies": "nodemon appMovies.js"
+  },
+  "keywords": [
+    "JavaScript"
+  ],
+  "author": "Me",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "^5.1.0",
+    "picocolors": "^1.1.1",
+    "zod": "^3.24.3"
+  },
+  "eslintConfig": {
+    "extends": "standard"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "standard": "^17.1.2"
+  }
+}

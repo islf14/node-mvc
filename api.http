@@ -1,0 +1,51 @@
+GET http://localhost:3000/all/data
+
+###
+POST http://localhost:3000/all
+Content-Type: application/json
+
+{
+  "name": "Pedro",
+  "type": "normal",
+  "moves": [
+    "Transform"
+  ]
+}
+
+###
+GET http://localhost:3000/
+
+###
+GET http://localhost:3000/movies
+
+###
+GET http://localhost:3000/movies?genre=Action
+
+###
+GET http://localhost:3000/movies/7e3fd5ab-60ff-4ae2-92b6-9597f0308d1
+
+###
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "Warcraft",
+  "year": 2016,
+  "director": "Duncan Jones",
+  "duration": 163,
+  "poster": "https://m.media-amazon.com/images/I/91obuWzA3XL._AC_UF1000,1000_QL80_.jpg",
+  "genre": [
+    "Adventure",
+    "Drama",
+    "Sci-Fi"
+  ],
+  "rate": 8.6
+}
+
+###
+PATCH http://localhost:3000/movies/d07c8547-97ff-43a0-858b-f167a60a1802
+Content-Type: application/json
+
+{
+  "year": 2012
+}
