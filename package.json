@@ -9,7 +9,8 @@
     "dev": "nodemon appMovies.js",
     "routing": "nodemon routing.js",
     "express": "nodemon express.js",
-    "movies": "nodemon appMovies.js"
+    "movies:mysql": "nodemon movies-mysql.js",
+    "movies:local": "nodemon movies-local.js"
   },
   "keywords": [
     "JavaScript"
@@ -18,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.0",
     "picocolors": "^1.1.1",

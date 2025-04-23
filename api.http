@@ -29,15 +29,15 @@ POST http://localhost:3000/movies
 Content-Type: application/json
 
 {
-  "title": "hi world",
-  "year": 2000,
-  "director": "Freddy M.",
+  "title": "Salute",
+  "year": 2022,
+  "director": "Juan M.",
   "duration": 163,
   "poster": "https://m.media-amazon.com/images/I/91obuWzA3XL._AC_UF1000,1000_QL80_.jpg",
   "genre": [
-    "Adventure",
+    "Comedy",
     "Drama",
-    "Sci-Fi"
+    "Adventure"
   ],
   "rate": 9.6
 }

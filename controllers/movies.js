@@ -1,9 +1,11 @@
-// import { MovieModel } from '../models/local-file-system/movie.js'
-import { MovieModel } from '../models/mysql/movie.js'
 import { validateMovie, validatePartialMovie } from './movies-validator.js'
 
 export class MovieController {
-  static async getAll (req, res) {
+  constructor ({ movieModel }) {
+    this.movieModel = movieModel
+  }
+
+  getAll = async (req, res) => {
     // const origin = req.header('origin')
     // if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
     //   res.header('Access-Control-Allow-Origin', origin)
@@ -12,7 +14,7 @@ export class MovieController {
     console.log('Connection accepted: ' + req.header('origin'))
 
     const { genre } = req.query
-    const movies = await MovieModel.getAll({ genre })
+    const movies = await this.movieModel.getAll({ genre })
     // if (genre) {
     //   const filteredMovies = movies.filter(movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase()))
     //   return res.json(filteredMovies)
@@ -20,21 +22,21 @@ export class MovieController {
     res.json(movies)
   }
 
-  static async getById (req, res) {
+  getById = async (req, res) => {
     const { id } = req.params
-    const movie = await MovieModel.getById({ id })
+    const movie = await this.movieModel.getById({ id })
     // const movie = movies.find(movie => movie.id === id)
     if (movie) return res.json(movie)
     res.status(404).json({ message: 'Movie not found' })
   }
 
-  static async create (req, res) {
+  create = async (req, res) => {
     const result = validateMovie(req.body)
 
     if (result.error) {
       return res.status(400).json({ error: JSON.parse(result.error.message) })
     }
-    const newMovie = await MovieModel.create({ input: result.data })
+    const newMovie = await this.movieModel.create({ input: result.data })
     // const newMovie = {
     //   id: randomUUID(),
     //   ...result.data
@@ -43,7 +45,7 @@ export class MovieController {
     res.status(201).json(newMovie)
   }
 
-  static async update (req, res) {
+  update = async (req, res) => {
     const result = validatePartialMovie(req.body)
     if (!result.success) {
       return res.status(400).json({ error: JSON.parse(result.error.message) })
@@ -51,7 +53,7 @@ export class MovieController {
 
     const { id } = req.params
 
-    const updateMovie = await MovieModel.update({ id, input: result.data })
+    const updateMovie = await this.movieModel.update({ id, input: result.data })
     // const movieIndex = movies.findIndex(movie => movie.id === id)
     // if (movieIndex === -1) {
     //   return res.status(404).json({ message: 'Movie not found' })
@@ -66,14 +68,14 @@ export class MovieController {
     return res.json(updateMovie)
   }
 
-  static async delete (req, res) {
+  delete = async (req, res) => {
     // const origin = req.header('origin')
     // if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
     //   res.header('Access-Control-Allow-Origin', origin)
     // }
 
     const { id } = req.params
-    const result = await MovieModel.delete({ id })
+    const result = await this.movieModel.delete({ id })
     // const movieIndex = movies.findIndex(movie => movie.id === id)
 
     if (result === false) {
