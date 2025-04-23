@@ -19,10 +19,10 @@ GET http://localhost:3000/
 GET http://localhost:3000/movies
 
 ###
-GET http://localhost:3000/movies?genre=Action
+GET http://localhost:3000/movies?genre=crime
 
 ###
-GET http://localhost:3000/movies/7e3fd5ab-60ff-4ae2-92b6-9597f0308d1
+GET http://localhost:3000/movies/618fed5b-1f2e-11f0-964c-c45444d093a2
 
 ###
 POST http://localhost:3000/movies
@@ -43,9 +43,13 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/movies/d07c8547-97ff-43a0-858b-f167a60a1802
+PATCH http://localhost:3000/movies/5ad1a235-0d9c-410a-b32b-220d91689a08
 Content-Type: application/json
 
 {
+  "title": "ThreeCamp",
   "year": 2012
 }
+
+###
+DELETE http://localhost:3000/movies/11497de0-dbdd-405d-958b-86357b9bd452

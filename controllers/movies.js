@@ -1,5 +1,6 @@
-import { MovieModel } from '../models/movie.js'
-import { validateMovie, validatePartialMovie } from '../movies-validator.js'
+// import { MovieModel } from '../models/local-file-system/movie.js'
+import { MovieModel } from '../models/mysql/movie.js'
+import { validateMovie, validatePartialMovie } from './movies-validator.js'
 
 export class MovieController {
   static async getAll (req, res) {
@@ -42,23 +43,6 @@ export class MovieController {
     res.status(201).json(newMovie)
   }
 
-  static async delete (req, res) {
-    // const origin = req.header('origin')
-    // if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    //   res.header('Access-Control-Allow-Origin', origin)
-    // }
-
-    const { id } = req.params
-    const result = await MovieModel.delete({ id })
-    // const movieIndex = movies.findIndex(movie => movie.id === id)
-
-    if (result === false) {
-      return res.status(400).json({ message: 'Movie not found' })
-    }
-    // movies.splice(movieIndex, 1)
-    return res.json({ message: 'Movie deleted' })
-  }
-
   static async update (req, res) {
     const result = validatePartialMovie(req.body)
     if (!result.success) {
@@ -80,5 +64,22 @@ export class MovieController {
 
     // movies[movieIndex] = updateMovie
     return res.json(updateMovie)
+  }
+
+  static async delete (req, res) {
+    // const origin = req.header('origin')
+    // if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    //   res.header('Access-Control-Allow-Origin', origin)
+    // }
+
+    const { id } = req.params
+    const result = await MovieModel.delete({ id })
+    // const movieIndex = movies.findIndex(movie => movie.id === id)
+
+    if (result === false) {
+      return res.status(400).json({ message: 'Movie not found' })
+    }
+    // movies.splice(movieIndex, 1)
+    return res.json({ message: 'Movie deleted' })
   }
 }
