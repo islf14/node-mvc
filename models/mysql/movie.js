@@ -73,17 +73,25 @@ export class MovieModel {
       return null
     }
     // register movie with generated UUID
-    let sql = 'INSERT INTO movie (id, title, year, director, duration, poster, rate) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?)'
-    let values = [NewUuid, title, year, director, duration, poster, rate]
+    const sql = 'INSERT INTO movie (id, title, year, director, duration, poster, rate) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?)'
+    const values = [NewUuid, title, year, director, duration, poster, rate]
     try {
       await connection.execute(sql, values)
     } catch (err) {
       console.log(err)
     }
-    // register movies_genres with each type of genre
+    // register in movies_genres the genres assigned to this movie
+    const { status } = await this.createMovieGenres({ id: NewUuid, genre })
+    if (status === 'ok') {
+      const newMovie = await this.getById({ id: NewUuid })
+      return [newMovie, genre]
+    }
+  }
+
+  static async createMovieGenres ({ id, genre }) {
     genre.forEach(async element => {
-      sql = 'SELECT * FROM movies_db.genre where genre.name = ?;'
-      values = [element]
+      const sql = 'SELECT * FROM movies_db.genre where genre.name = ?;'
+      const values = [element]
       let genreInDB = null
       try {
         const [rows] = await connection.execute(sql, values)
@@ -92,20 +100,21 @@ export class MovieModel {
       } catch (err) {
         console.log(err)
       }
-      sql = 'INSERT INTO movies_db.movies_genres (movies_genres.movie_id, movies_genres.genre_id) VALUES (UUID_TO_BIN(?), ?);'
-      values = [NewUuid, genreInDB]
+      const sql2 = 'INSERT INTO movies_db.movies_genres (movies_genres.movie_id, movies_genres.genre_id) VALUES (UUID_TO_BIN(?), ?);'
+      const values2 = [id, genreInDB]
       try {
-        await connection.execute(sql, values)
+        await connection.execute(sql2, values2)
       } catch (err) {
         console.log(err)
       }
     })
-
-    const newMovie = await this.getById({ id: NewUuid })
-    return [newMovie, genre]
+    return { status: 'ok' }
   }
 
   static async update ({ id, input }) {
+    const movie = await this.getById({ id })
+    if (!movie) return { message: 'Error, Movie not found' }
+
     const {
       title,
       year,
@@ -116,60 +125,84 @@ export class MovieModel {
       rate
     } = input
 
-    console.log(input)
-    let sql = 'UPDATE'
-    let sqlSet = 'SET'
-    let values = []
+    // join all query and values
+    let sqlSet = ''
+    let sqlValues = []
     if (title) {
       sqlSet += ' movie.title = ?'
-      values = [title]
+      sqlValues = [...sqlValues, title]
     }
     if (year) {
-      if (sqlSet === 'SET') sqlSet += ' movie.year = ?'
-      else {
-        sqlSet += ', movie.year = ?'
-        values = [...values, year]
-      }
+      if (sqlSet === '') sqlSet += ' movie.year = ?'
+      else sqlSet += ', movie.year = ?'
+      sqlValues = [...sqlValues, year]
     }
     if (director) {
-      if (sqlSet === 'SET') sqlSet += ' movie.director = ?'
-      else {
-        sqlSet += ', movie.director = ?'
-        values = [...values, director]
-      }
+      if (sqlSet === '') sqlSet += ' movie.director = ?'
+      else sqlSet += ', movie.director = ?'
+      sqlValues = [...sqlValues, director]
     }
     if (duration) {
-      if (sqlSet === 'SET') sqlSet += ' movie.duration = ?'
-      else {
-        sqlSet += ', movie.duration = ?'
-        values = [...values, duration]
-      }
+      if (sqlSet === '') sqlSet += ' movie.duration = ?'
+      else sqlSet += ', movie.duration = ?'
+      sqlValues = [...sqlValues, duration]
     }
     if (poster) {
-      if (sqlSet === 'SET') sqlSet += ' movie.poster = ?'
-      else {
-        sqlSet += ', movie.poster = ?'
-        values = [...values, poster]
+      if (sqlSet === '') sqlSet += ' movie.poster = ?'
+      else sqlSet += ', movie.poster = ?'
+      sqlValues = [...sqlValues, poster]
+    }
+    if (rate) {
+      if (sqlSet === '') sqlSet += ' movie.rate = ?'
+      else sqlSet += ', movie.rate = ?'
+      sqlValues = [...sqlValues, rate]
+    }
+
+    // create query to update
+    if (sqlSet !== '') {
+      const sql = `UPDATE movies_db.movie SET ${sqlSet} WHERE movie.id = UUID_TO_BIN(?);`
+      const values = [...sqlValues, id]
+      try {
+        await connection.execute(sql, values)
+      } catch (err) {
+        console.log(err)
       }
     }
     if (genre) {
-      // sqlSet += 'movie.genre = ? '
+      // remove all genres from this movie
+      await this.deleteMovieGenres({ id })
+
+      // register in movies_genres the genres assigned to this movie
+      const { status } = await this.createMovieGenres({ id, genre })
+      if (status === 'ok') {
+        const newMovie = await this.getById({ id })
+        return [newMovie, genre]
+        // return ({ message: 'Error!, Movie not found' })
+      }
       console.log(genre)
     }
-    if (rate) {
-      if (sqlSet === 'SET') sqlSet += ' movie.rate = ?'
-      else {
-        sqlSet += ', movie.rate = ?'
-        values = [...values, rate]
-      }
+  }
+
+  // remove all genres from a movie
+  static async deleteMovieGenres ({ id }) {
+    const sql = 'DELETE FROM movies_db.movies_genres WHERE movies_genres.movie_id = UUID_TO_BIN(?);'
+    const values = [id]
+    try {
+      await connection.execute(sql, values)
+    } catch (err) {
+      console.log(err)
     }
-    sql = `UPDATE movies_db.movie ${sqlSet} WHERE movie.id = UUID_TO_BIN(?);`
-    values = [...values, id]
-    console.log(sql)
-    console.log(values)
   }
 
   static async delete ({ id }) {
-
+    await this.deleteMovieGenres({ id })
+    const sql = 'DELETE FROM movies_db.movie WHERE movie.id = UUID_TO_BIN(?);'
+    const values = [id]
+    try {
+      await connection.execute(sql, values)
+    } catch (err) {
+      console.log(err)
+    }
+    return true
   }
 }

@@ -9,7 +9,7 @@ export class MovieController {
     //   res.header('Access-Control-Allow-Origin', origin)
     // }
 
-    console.log('accepted: ' + req.header('origin'))
+    console.log('Connection accepted: ' + req.header('origin'))
 
     const { genre } = req.query
     const movies = await MovieModel.getAll({ genre })

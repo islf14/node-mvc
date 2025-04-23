@@ -22,16 +22,16 @@ GET http://localhost:3000/movies
 GET http://localhost:3000/movies?genre=crime
 
 ###
-GET http://localhost:3000/movies/618fed5b-1f2e-11f0-964c-c45444d093a2
+GET http://localhost:3000/movies/213241c1-1ff1-11f0-964c-c45444d093a2
 
 ###
 POST http://localhost:3000/movies
 Content-Type: application/json
 
 {
-  "title": "Warcraft",
-  "year": 2016,
-  "director": "Duncan Jones",
+  "title": "hi world",
+  "year": 2000,
+  "director": "Freddy M.",
   "duration": 163,
   "poster": "https://m.media-amazon.com/images/I/91obuWzA3XL._AC_UF1000,1000_QL80_.jpg",
   "genre": [
@@ -39,17 +39,24 @@ Content-Type: application/json
     "Drama",
     "Sci-Fi"
   ],
-  "rate": 8.6
+  "rate": 9.6
 }
 
 ###
-PATCH http://localhost:3000/movies/5ad1a235-0d9c-410a-b32b-220d91689a08
+PATCH http://localhost:3000/movies/213241c1-1ff1-11f0-964c-c45444d093a2
 Content-Type: application/json
 
 {
-  "title": "ThreeCamp",
-  "year": 2012
+  "title": "Deleted all movies",
+  "genre": [
+    "Thriller",
+    "Fantasy",
+    "Comedy"
+  ]
 }
 
 ###
-DELETE http://localhost:3000/movies/11497de0-dbdd-405d-958b-86357b9bd452
+DELETE http://localhost:3000/movies/d6338363-1f8e-11f0-964c-c45444d093a2
+
+###
+GET http://localhost:3000/movies
