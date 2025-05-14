@@ -5,6 +5,7 @@ const PORT = process.env.PORT ?? 3000
 const app = express()
 app.disable('x-powered-by')
 
+// express json replaces all code below
 app.use(express.json())
 
 // app.use((req, res, next) => {

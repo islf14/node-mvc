@@ -1,3 +1,4 @@
+###### for routing.js
 GET http://localhost:3000/all/data
 
 ###
@@ -12,7 +13,13 @@ Content-Type: application/json
   ]
 }
 
-###
+### 
+POST http://localhost:3000/other
+Content-Type: application/json
+
+#######
+####### for movies-local.js and movies-mysql.js
+#for ./web/index.html use npx servor ./web
 GET http://localhost:3000/
 
 ###

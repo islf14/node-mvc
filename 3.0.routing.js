@@ -31,7 +31,7 @@ const processRequest = (req, res) => {
           break
         }
         case '/other': {
-          const body = ''
+          const body = 'other page'
           console.log(body)
           break
         }
